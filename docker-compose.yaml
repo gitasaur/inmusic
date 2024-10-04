@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: inmusic_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inmusic
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+
+  nestjs:
+    image: gitasaur/inmusic-api
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@inmusic_postgres:5432/inmusic"
+    volumes:
+      - ./:/usr/src/app
+    working_dir: /usr/src/app
+    ports:
+      - "3000:3000"
+      - "50051:50051"
+    depends_on:
+      - postgres
+    restart: always
+
+volumes:
+  postgres_data:

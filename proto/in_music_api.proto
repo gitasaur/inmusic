@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+package in_music_api;
+
+// ---------------
+// in_music_api.ProfileService
+// ---------------
+service ProfilesService {
+  rpc CreateProfile (CreateProfileRequest) returns (Profile) {}
+  rpc GetProfiles (Empty) returns (ProfilesList) {}
+  rpc GetProfile (ProfileByIdRequest) returns (Profile) {}
+  rpc UpdateProfile (UpdateProfileRequest) returns (Profile) {}
+  rpc DeleteProfile (ProfileByIdRequest) returns (Empty) {}
+}
+
+message Profile {
+  int32 id = 1;
+  string email = 2;
+  string firstname = 3;
+  string lastname = 4;
+  repeated ProductRegistration productRegistrations = 5;
+}
+
+message CreateProfileRequest {
+  string email = 1;
+  string firstname = 2;
+  string lastname = 3;
+}
+
+message UpdateProfileRequest {
+  int32 id = 1;
+  string email = 2;
+  string firstname = 3;
+  string lastname = 4;
+}
+
+message ProfileByIdRequest {
+  int32 id = 1;
+}
+
+message ProfilesList {
+  repeated Profile profiles = 1;
+}
+
+
+// ---------------------------------------
+// in_music_api.ProductRegistrationsService
+// ---------------------------------------
+service ProductRegistrationsService {
+  rpc CreateProductRegistration (CreateProductRegistrationRequest) returns (ProductRegistration) {}
+  rpc GetProductRegistrations (Empty) returns (ProductRegistrationList) {}
+  rpc GetAllProductRegistrations (Empty) returns (ProductRegistrationList) {}
+  rpc GetProductRegistration (ProductRegistrationByIdRequest) returns (ProductRegistration) {}
+  rpc GetProductRegistrationsByProfile (ProductRegistrationByProfileRequest) returns (ProductRegistrationList) {}
+  rpc UpdateProductRegistration (UpdateProductRegistrationRequest) returns (ProductRegistration) {}
+  rpc DeleteProductRegistration (ProductRegistrationByIdRequest) returns (Empty) {}
+}
+
+message ProductRegistration {
+  int32 id = 1;
+  int32 productId = 2;
+  int32 profileId = 3;
+  string purchaseDate = 4;
+  string expiryAt = 5;
+  string serialCode = 6;
+  Profile profile = 7;
+  Product product = 8;
+}
+
+message ProductRegistrationList {
+  repeated ProductRegistration productRegistrations = 1;
+}
+
+message CreateProductRegistrationRequest {
+  int32 profileId = 1;
+  int32 productId = 2;
+  string purchaseDate = 3;
+  string expiryAt = 4;
+  string serialCode = 5;
+}
+
+message UpdateProductRegistrationRequest {
+  int32 id = 1;
+  string purchaseDate = 2;
+  string expiryAt = 3;
+  string serialCode = 4;
+}
+
+message ProductRegistrationByIdRequest {
+  int32 id = 1;
+  optional int32 profileId = 2;
+}
+
+message ProductRegistrationByProfileRequest {
+  int32 profileId = 1;
+}
+
+
+// ---------------------------------
+// in_music_api.ProductBundleService
+// ---------------------------------
+service ProductBundleService {
+  rpc CreateProductBundle (CreateProductBundleRequest) returns (ProductBundleResponse);
+  rpc FindAllProductBundles (Empty) returns (ProductBundlesList);
+  rpc FindProductBundleById (FindProductBundleByIdRequest) returns (ProductBundleResponse);
+  rpc UpdateProductBundle (UpdateProductBundleRequest) returns (ProductBundleResponse);
+  rpc RemoveProductBundle (RemoveProductBundleRequest) returns (Empty);
+}
+
+message CreateProductBundleRequest {
+  int32 mainProductId = 1;
+  int32 bundledProductId = 2;
+}
+
+message UpdateProductBundleRequest {
+  int32 id = 1;
+  int32 mainProductId = 2;
+  int32 bundledProductId = 3;
+}
+
+message FindProductBundleByIdRequest {
+  int32 id = 1;
+}
+
+message RemoveProductBundleRequest {
+  int32 id = 1;
+}
+
+message ProductBundleResponse {
+  int32 id = 1;
+  int32 mainProductId = 2;
+  int32 bundledProductId = 3;
+}
+
+message ProductBundlesList {
+  repeated ProductBundleResponse bundles = 1;
+}
+
+
+// ---------------------------
+// in_music_api.ProductService
+// ---------------------------
+service ProductService {
+  rpc CreateProduct (CreateProductRequest) returns (Product);
+  rpc FindAllProducts (Empty) returns (ProductsList);
+  rpc FindProductById (FindProductByIdRequest) returns (Product);
+  rpc UpdateProduct (UpdateProductRequest) returns (Product);
+  rpc RemoveProduct (RemoveProductRequest) returns (Empty);
+}
+
+message CreateProductRequest {
+  string SKU = 1;
+  string name = 2;
+}
+
+message UpdateProductRequest {
+  int32 id = 1;
+  string SKU = 2;
+  string name = 3;
+}
+
+message FindProductByIdRequest {
+  int32 id = 1;
+}
+
+message RemoveProductRequest {
+  int32 id = 1;
+}
+
+message Product {
+  int32 id = 1;
+  string SKU = 2;
+  string name = 3;
+}
+
+message ProductsList {
+  repeated Product products = 1;
+}
+
+
+// ------
+// Common
+// ------
+message Empty {}

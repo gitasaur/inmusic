@@ -1,0 +1,48 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id                   Int                   @id @default(autoincrement())
+  email                String                @unique
+  firstname            String
+  lastname             String
+  productRegistrations ProductRegistration[]
+}
+
+model Product {
+  id   Int    @id @default(autoincrement())
+  SKU  String @unique
+  name String
+
+  productRegistrations ProductRegistration[]
+  mainProductBundles   ProductBundle[]       @relation("MainProductBundles")
+  bundledProducts      ProductBundle[]       @relation("BundledProducts")
+}
+
+model ProductRegistration {
+  id           Int       @id @default(autoincrement())
+  purchaseDate DateTime
+  expiryAt     DateTime?
+  serialCode   String
+  productId    Int
+  profileId    Int
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model ProductBundle {
+  id               Int @id @default(autoincrement())
+  mainProductId    Int
+  bundledProductId Int
+
+  mainProduct    Product @relation("MainProductBundles", fields: [mainProductId], references: [id])
+  bundledProduct Product @relation("BundledProducts", fields: [bundledProductId], references: [id])
+}
